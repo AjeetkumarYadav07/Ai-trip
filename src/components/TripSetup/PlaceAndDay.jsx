@@ -25,6 +25,7 @@ const PlaceAndDay = ({ formData, setFormData, query, setQuery, suggestions, setS
 };
 
 
+
   const handleSelect = (place) => {
     setQuery(place.display_name);
     setFormData((prev) => ({

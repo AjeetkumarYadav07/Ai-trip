@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.LOCATIONIQ_API_KEY;
   const { q } = req.query;
 
-  if (!q || q.length < 3) {
+  if (!q || q.length < 2) {
     return res.status(400).json({ error: "Query must be at least 3 characters" });
   }
 
