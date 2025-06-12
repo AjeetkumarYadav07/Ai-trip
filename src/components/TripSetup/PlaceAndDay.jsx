@@ -4,7 +4,7 @@ import React from "react";
 const PlaceAndDay = ({ formData, setFormData, query, setQuery, suggestions, setSuggestions }) => {
    
   // api palce map 
-  const apiKey = process.env.VITE_MAP_PLACE_API_KEY;
+  const apiKey = import.meta.env.VITE_MAP_PLACE_API_KEY;
 
   const handleInput = async (e) => {
     const value = e.target.value;
