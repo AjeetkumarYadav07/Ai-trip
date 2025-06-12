@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import Home from './Pages/Home/Home';
+import Home from './pages/Home/Home';
 import Header from './components/Header/Header';
 import CreateTrip from './pages/CreateTrip/CreateTrip';
 import { Toaster } from 'sonner';
