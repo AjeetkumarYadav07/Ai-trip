@@ -4,22 +4,26 @@ import React from "react";
 const PlaceAndDay = ({ formData, setFormData, query, setQuery, suggestions, setSuggestions }) => {
    
   // api palce map 
-  const apiKey = import.meta.env.VITE_MAP_PLACE_API_KEY;
+  // const apiKey = import.meta.env.VITE_MAP_PLACE_API_KEY;
 
   const handleInput = async (e) => {
-    const value = e.target.value;
-    setQuery(value);
+  const value = e.target.value;
+  setQuery(value);
 
-    if (value.length > 2) {
-      const res = await fetch(
-        `https://us1.locationiq.com/v1/autocomplete.php?key=${apiKey}&q=${value}&format=json`
-      );
+  if (value.length > 2) {
+    try {
+      const res = await fetch(`/api/autocomplete?q=${encodeURIComponent(value)}`);
       const data = await res.json();
       setSuggestions(data);
-    } else {
+    } catch (err) {
+      console.error("Failed to fetch suggestions:", err);
       setSuggestions([]);
     }
-  };
+  } else {
+    setSuggestions([]);
+  }
+};
+
 
   const handleSelect = (place) => {
     setQuery(place.display_name);
