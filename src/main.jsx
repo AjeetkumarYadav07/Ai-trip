@@ -9,7 +9,7 @@ createRoot(document.getElementById("root")).render(
   
   <BrowserRouter>
     <StrictMode>
-      <GoogleOAuthProvider clientId={process.env.VITE_GOOGLE_AUTH_ID} >
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_ID} >
            <App />
       </GoogleOAuthProvider>
     
