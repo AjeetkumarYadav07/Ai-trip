@@ -7,19 +7,22 @@ const HotelCardItem = ({hotel , index}) => {
    
     const[imagUrl , setImageUrl] = useState(null);
 
-    useEffect(() =>{
-        
-        const fetchImage = async()=>{
-            const imgpath = hotel?.hotelname;
-            if(!imgpath) return ;
+   useEffect(() => {
+    const fetchImage = async () => {
+      const imgPath = hotel?.hotelname;
+      if (!imgPath) return;
 
-            const img = await fetchUnsplashImage(imgpath);
+      try {
+        const response = await fetch(`/api/unsplash?query=${encodeURIComponent(imgPath)}`);
+        const data = await response.json();
+        setImageUrl(data.imageUrl);
+      } catch (error) {
+        console.error("❌ Failed to fetch image from serverless function:", error);
+      }
+    };
 
-            setImageUrl(img)
-        };
-
-        fetchImage();
-    },[hotel?.hotelname]);
+    fetchImage();
+  }, [hotel?.hotelname]);
 
   return (
     <div>

@@ -3,26 +3,45 @@ import { assets } from '../../assets/assets'
 import { Button } from '../ui/button'
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import { fetchUnsplashImage } from '../../config/UnplashApi';
+// import { fetchUnsplashImage } from '../../config/UnplashApi';
 
 const PlaceCardItem = ({place}) => {
     
-  const[imageUrl , setImageUrl] = useState(null);
+  // const[imageUrl , setImageUrl] = useState(null);
 
-     useEffect(() =>{
-         const fetchImage = async() =>{
-             const imagepath = place.placename ;
+  //    useEffect(() =>{
+  //        const fetchImage = async() =>{
+  //            const imagepath = place.placename ;
 
-              if(!imagepath) return ;
-             const img = await fetchUnsplashImage(imagepath);
+  //             if(!imagepath) return ;
+  //            const img = await fetchUnsplashImage(imagepath);
 
-             setImageUrl(img)
+  //            setImageUrl(img)
 
-     };
+  //    };
 
-     fetchImage();
+  //    fetchImage();
 
-     },[place.placename]);
+  //    },[place.placename]);
+
+  useEffect(() => {
+  const fetchImage = async () => {
+    const imagePath = place?.placename;
+
+    if (!imagePath || imagePath.trim().length === 0) return;
+
+    try {
+      const res = await fetch(`/api/unsplash?query=${encodeURIComponent(imagePath)}`);
+      const data = await res.json();
+      setImageUrl(data.imageUrl || null);
+    } catch (error) {
+      console.error("❌ Error fetching image:", error);
+      setImageUrl(null);
+    }
+  };
+
+  fetchImage();
+}, [place?.placename]);
   return (
     <div className='rounded-xl p-5 mt-5  border-3 border-amber-100 hover:scale-105 transition-all hover:shadow-md  '>
         

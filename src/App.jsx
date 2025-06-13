@@ -10,7 +10,7 @@ import { ThemeProvider } from './context/ThemeContext';
 function App() {
   return (
     <ThemeProvider>
-      <div className="min-h-screen   bg-white dark:bg-gray-900 text-black dark:text-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />

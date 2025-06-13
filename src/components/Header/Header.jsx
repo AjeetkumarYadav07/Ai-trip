@@ -39,7 +39,7 @@ const Header = () => {
             onClick={toggleTheme}
             className="text-xl p-2 rounded-full dark:text-yellow-300 text-gray-800"
           >
-            {darkMode  ? <FaSun className="cursor-pointer" /> : <FaMoon />}
+            {darkMode ? <FaSun /> : <FaMoon />}
           </button>
 
 

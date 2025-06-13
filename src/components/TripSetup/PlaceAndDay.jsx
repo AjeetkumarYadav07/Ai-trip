@@ -1,30 +1,47 @@
+// TripSetup/PlaceAndDay.jsx
 import React from "react";
 
-const PlaceAndDay = ({
-  formData,
-  setFormData,
-  query,
-  setQuery,
-  suggestions,
-  setSuggestions,
-}) => {
-  const handleInput = async (e) => {
-    const value = e.target.value;
-    setQuery(value);
+const PlaceAndDay = ({ formData, setFormData, query, setQuery, suggestions, setSuggestions }) => {
+   
+  // api palce map 
+  // const apiKey = import.meta.env.VITE_MAP_PLACE_API_KEY;
 
-    if (value.length > 2) {
-      try {
-        const res = await fetch(`/api/autocomplete?q=${encodeURIComponent(value)}`);
-        const data = await res.json();
-        setSuggestions(data);
-      } catch (err) {
-        console.error("Failed to fetch suggestions:", err);
-        setSuggestions([]);
+  // const handleInput = async (e) => {
+  //   const value = e.target.value;
+  //   setQuery(value);
+
+  //   if (value.length > 2) {
+  //     const res = await fetch(
+  //       `https://us1.locationiq.com/v1/autocomplete.php?key=${apiKey}&q=${value}&format=json`
+  //     );
+  //     const data = await res.json();
+  //     setSuggestions(data);
+  //   } else {
+  //     setSuggestions([]);
+  //   }
+  // };
+
+
+  const handleInput = async (e) => {
+  const value = e.target.value;
+  setQuery(value);
+
+  if (value.length > 2) {
+    try {
+      const res = await fetch(`/api/autocomplete?q=${encodeURIComponent(value)}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch suggestions");
       }
-    } else {
+      const data = await res.json();
+      setSuggestions(data);
+    } catch (error) {
+      console.error("Autocomplete fetch error:", error);
       setSuggestions([]);
     }
-  };
+  } else {
+    setSuggestions([]);
+  }
+};
 
   const handleSelect = (place) => {
     setQuery(place.display_name);
@@ -42,7 +59,7 @@ const PlaceAndDay = ({
     }));
   };
 
-  const dark = localStorage.getItem("theme") === "dark";
+   const dark = localStorage.getItem('theme') === 'dark' ; 
 
   return (
     <>
@@ -53,22 +70,15 @@ const PlaceAndDay = ({
         className="border p-2 rounded w-full"
         value={query}
         onChange={handleInput}
-        required
+        required={true}
       />
 
       {suggestions.length > 0 && (
-        <ul
-          // activting dark mode 
-          className={`${
-            dark ? "bg-gray-800" : "bg-white"
-          } border rounded mt-1 shadow max-h-60 overflow-auto`}
-        >
+        <ul    className={`${dark? 'bg-gray-800' : 'bg-white'} border rounded mt-1 shadow max-h-60 overflow-auto`}>
           {suggestions.map((place, index) => (
             <li
               key={index}
-              className={`${
-                dark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-              } p-2 cursor-pointer`}
+              className={`${dark? 'hover:bg-gray-700' : ' hover:bg-gray-100 '}  p-2 cursor-pointer`}
               onClick={() => handleSelect(place)}
             >
               {place.display_name}

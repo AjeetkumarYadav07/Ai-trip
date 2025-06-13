@@ -2,19 +2,23 @@ import React, { useEffect, useState } from "react";
 import { assets } from "../../assets/assets";
 import { Button } from "../ui/button";
 import { FaShareAlt } from "react-icons/fa";
-import { fetchUnsplashImage } from "../../config/UnplashApi";
+// import { fetchUnsplashImage } from "../../config/UnplashApi";
 
 const InfoSection = ({ trip }) => {
   const [imageUrl, setImageUrl] = useState(null);
-
-  useEffect(() => {
+ useEffect(() => {
     const fetchImage = async () => {
       const destination = trip?.userSelection?.destination;
       if (!destination) return;
 
-      const img = await fetchUnsplashImage(destination);
-      // console.log("Fetched Unsplash image:", img);
-      setImageUrl(img);
+      try {
+        const res = await fetch(`/api/unsplash?query=${encodeURIComponent(destination)}`);
+        const data = await res.json();
+        setImageUrl(data.imageUrl);
+      } catch (error) {
+        console.error("❌ Error fetching image:", error);
+        setImageUrl(null);
+      }
     };
 
     fetchImage();

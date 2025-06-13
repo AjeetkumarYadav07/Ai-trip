@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing LOCATIONIQ_API_KEY in environment variables" });
   }
 
-  if (!q || q.length < 3) {
+  if (!q || q.length < 2) {
     return res.status(400).json({ error: "Query must be at least 3 characters long" });
   }
 
