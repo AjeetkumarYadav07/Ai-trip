@@ -10,104 +10,169 @@ import { useNavigate } from "react-router-dom";
 import chatSession from "../../config/gemini";
 import normalizeKeysDeep from "./normalizeKeysDeep";
 
-const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
+// const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
 
-    //Mainting Loading state for Gnerate Bbutton
-   const[loading , setLoading] = useState(false);
+//     //Mainting Loading state for Gnerate Bbutton
+//    const[loading , setLoading] = useState(false);
 
-   // Navigating the route on ViewTrip based on ID
+//    // Navigating the route on ViewTrip based on ID
 
-   const navigate = useNavigate() ;
+//    const navigate = useNavigate() ;
 
 
-  const onGenerateTrip = async () => {
-    const user = localStorage.getItem("userInfo"); // ✅ Fixed key
-    // if (!user) {
-    //   console.log("❌ User not logged in");
-    //   setLoginForm(false);
-    //   return;
-    // }
-       if (user) {
-    console.log("👤 User found:", JSON.parse(user));
+//   const onGenerateTrip = async () => {
+//     const user = localStorage.getItem("userInfo"); // ✅ Fixed key
+//     // if (!user) {
+//     //   console.log("❌ User not logged in");
+//     //   setLoginForm(false);
+//     //   return;
+//     // }
+//        if (user) {
+//     console.log("👤 User found:", JSON.parse(user));
+//   } else {
+//     console.log("⚠️ Guest user");
+//   }
+
+//     // console.log("👤 User found:", JSON.parse(user));
+
+//     const { destination, noOfdays, budget, traveller } = formData;
+//     const days = Number(noOfdays);
+
+//     if (
+//       !destination ||
+//       !noOfdays ||
+//       !budget ||
+//       !traveller ||
+//       isNaN(days) ||
+//       days <= 0 ||
+//       days > 5
+//     ) {
+//       toast("Please fill all information OR Days must be between 1 and 5.");
+//       return;
+//     }
+
+//     const FINAL_PROMPT = AI_PROMT.replace("{location}", formData?.destination)
+//       .replace("{totalDays}",formData?.noOfdays)
+//       .replace("{traveler}", formData?.traveller)
+//       .replace("{budget}", formData?.budget)
+//       .replace("{totalDays}", formData?.noOfdays);
+
+//     console.log("📤 Prompt sent to AI:", FINAL_PROMPT);
+   
+//     setLoading(true);
+    
+//     try {
+//       const result = await chatSession.sendMessage(FINAL_PROMPT);
+//       console.log("✅ AI response:", result?.response?.text()); // This should now show
+
+//     await  SaveAiTrip(result?.response?.text());
+    
+//       setLoading(false);
+
+
+//     } catch (error) {
+//       console.log("❌ Error to Generate Trip", error);
+//     }
+//   };
+
+//   // const SaveAiTrip = async (TripData) => {
+
+//   //   setLoading(true);
+//   //   // Add a new document in collection "cities"
+//   //    const userInfo =JSON.parse(localStorage.getItem("userInfo"));
+//   //   const docId= Date.now().toString()
+//   //   await setDoc(doc(db, "AITrips", docId), {
+//   //     userSelection:formData,
+//   //     tripData:TripData,
+//   //     userEmail:userInfo?.email,
+//   //     id:docId
+
+//   //   });
+
+//   //   setLoading(false)
+//   // };
+
+
+
+//   const SaveAiTrip = async (TripData) => {
+//   if (!TripData) {
+//     console.error("❌ TripData is undefined, not saving to Firestore.");
+//     return;
+//   }
+
+//   setLoading(true);
+//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+//   const docId = Date.now().toString();
+
+
+//    // Normalize everything dynamically
+//   const parsedTripData = JSON.parse(TripData);
+//   const normalizedTripData = normalizeKeysDeep(parsedTripData);
+
+//   await setDoc(doc(db, "AiTrips", docId), {
+//     userSelection: formData,
+//     tripData: normalizedTripData,
+//     userEmail: userInfo?.email || "guest",
+//     id: docId,
+//   });
+
+//   setLoading(false);
+//   navigate('/view-trip/'+docId)
+// };
+
+
+
+const onGenerateTrip = async (formData ,  generateTripRef) => {
+  setLoading(true);
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (userInfo) {
+    console.log("👤 User found:", userInfo);
   } else {
     console.log("⚠️ Guest user");
   }
 
-    // console.log("👤 User found:", JSON.parse(user));
+  const { destination, noOfdays, budget, traveller } = formData;
+  const days = Number(noOfdays);
 
-    const { destination, noOfdays, budget, traveller } = formData;
-    const days = Number(noOfdays);
+  // Relax validation: allow missing fields, just warn
+  if (!destination || !noOfdays || !budget || !traveller || isNaN(days) || days <= 0) {
+    toast("Some fields are missing or invalid. Generating anyway with defaults.");
+  }
 
-    if (
-      !destination ||
-      !noOfdays ||
-      !budget ||
-      !traveller ||
-      isNaN(days) ||
-      days <= 0 ||
-      days > 5
-    ) {
-      toast("Please fill all information OR Days must be between 1 and 5.");
-      return;
-    }
+  const FINAL_PROMPT = AI_PROMT.replace("{location}", destination || "a random place")
+    .replace("{totalDays}", noOfdays || "1")
+    .replace("{traveler}", traveller || "1")
+    .replace("{budget}", budget || "1000");
 
-    const FINAL_PROMPT = AI_PROMT.replace("{location}", formData?.destination)
-      .replace("{totalDays}",formData?.noOfdays)
-      .replace("{traveler}", formData?.traveller)
-      .replace("{budget}", formData?.budget)
-      .replace("{totalDays}", formData?.noOfdays);
+  try {
+    const result = await chatSession.sendMessage(FINAL_PROMPT);
+    console.log("✅ AI response:", result?.response?.text());
 
-    console.log("📤 Prompt sent to AI:", FINAL_PROMPT);
-   
-    setLoading(true);
-    
-    try {
-      const result = await chatSession.sendMessage(FINAL_PROMPT);
-      console.log("✅ AI response:", result?.response?.text()); // This should now show
+    await SaveAiTrip(result?.response?.text(), userInfo);
+  } catch (error) {
+    console.error("❌ Error generating trip:", error);
+  }
 
-    await  SaveAiTrip(result?.response?.text());
-    
-      setLoading(false);
+  setLoading(false);
+};
 
-
-    } catch (error) {
-      console.log("❌ Error to Generate Trip", error);
-    }
-  };
-
-  // const SaveAiTrip = async (TripData) => {
-
-  //   setLoading(true);
-  //   // Add a new document in collection "cities"
-  //    const userInfo =JSON.parse(localStorage.getItem("userInfo"));
-  //   const docId= Date.now().toString()
-  //   await setDoc(doc(db, "AITrips", docId), {
-  //     userSelection:formData,
-  //     tripData:TripData,
-  //     userEmail:userInfo?.email,
-  //     id:docId
-
-  //   });
-
-  //   setLoading(false)
-  // };
-
-
-
-  const SaveAiTrip = async (TripData) => {
+const SaveAiTrip = async (TripData, userInfo) => {
   if (!TripData) {
-    console.error("❌ TripData is undefined, not saving to Firestore.");
+    console.error("❌ TripData undefined, not saving to Firestore.");
     return;
   }
 
-  setLoading(true);
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const docId = Date.now().toString();
 
-
-   // Normalize everything dynamically
-  const parsedTripData = JSON.parse(TripData);
-  const normalizedTripData = normalizeKeysDeep(parsedTripData);
+  // Normalize data safely
+  let normalizedTripData;
+  try {
+    const parsedTripData = JSON.parse(TripData);
+    normalizedTripData = normalizeKeysDeep(parsedTripData);
+  } catch {
+    normalizedTripData = TripData; // fallback if not JSON
+  }
 
   await setDoc(doc(db, "AiTrips", docId), {
     userSelection: formData,
@@ -116,10 +181,8 @@ const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
     id: docId,
   });
 
-  setLoading(false);
-  navigate('/view-trip/'+docId)
+  navigate("/view-trip/" + docId);
 };
-
 
     //Assign function to ref
   useEffect(() => {
