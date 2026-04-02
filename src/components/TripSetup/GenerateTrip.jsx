@@ -22,13 +22,18 @@ const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
 
   const onGenerateTrip = async () => {
     const user = localStorage.getItem("userInfo"); // ✅ Fixed key
-    if (!user) {
-      console.log("❌ User not logged in");
-      setLoginForm(false);
-      return;
-    }
-
+    // if (!user) {
+    //   console.log("❌ User not logged in");
+    //   setLoginForm(false);
+    //   return;
+    // }
+       if (user) {
     console.log("👤 User found:", JSON.parse(user));
+  } else {
+    console.log("⚠️ Guest user");
+  }
+
+    // console.log("👤 User found:", JSON.parse(user));
 
     const { destination, noOfdays, budget, traveller } = formData;
     const days = Number(noOfdays);
@@ -107,7 +112,7 @@ const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
   await setDoc(doc(db, "AiTrips", docId), {
     userSelection: formData,
     tripData: normalizedTripData,
-    userEmail: userInfo?.email,
+    userEmail: userInfo?.email || "guest",
     id: docId,
   });
 
