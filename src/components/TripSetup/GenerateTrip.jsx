@@ -24,7 +24,7 @@ const GenerateTrip = ({ formData, setLoginForm, generateTripRef }) => {
     const user = localStorage.getItem("userInfo"); // ✅ Fixed key
     if (!user) {
       console.log("❌ User not logged in");
-      setLoginForm(true);
+      setLoginForm(false);
       return;
     }
 
